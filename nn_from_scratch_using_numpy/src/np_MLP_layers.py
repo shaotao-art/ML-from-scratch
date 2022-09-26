@@ -1,38 +1,5 @@
 import numpy as np
 
-"""
-宏观来看，决定模块的初始化所需的参数：
-    如对于Linear层
-        input feature dim
-        output feature dim
-
-1. 参数管理
-    prams: 存储参数
-    cache: 存储用于计算梯度的中间变量
-    gradient: 存储梯度
-
-2. init_params
-    初始化参数
-
-2. forward
-    前向过程 以Linear层为例
-    out = input feature @ weight + bias
-    (b_s, in_dim) @ (in_dim, out_dim) + out_dim = (b_s, out_dim)
-
-3. backward
-    需要计算梯度
-    以Linear层为例
-    input: d_last 上游传过来的累计梯度 (b_s, out_dim)
-    out:
-        d_w: (in_dim, out_dim), x.T @ d_last
-        d_b: (out_dim), 
-        d_x: (b_s, in_dim), d_last @ weight.T 
-
-4. update_params
-    根据计算出的梯度使用梯度下降法更新参数
-"""
-
-
 class Layer:
     """
     base class for layers

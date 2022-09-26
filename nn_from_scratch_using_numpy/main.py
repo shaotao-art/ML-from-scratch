@@ -1,4 +1,3 @@
-from distutils.log import FATAL
 import numpy as np
 
 from src.MLP import MLP
