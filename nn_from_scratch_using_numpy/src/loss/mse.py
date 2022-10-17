@@ -1,8 +1,10 @@
-from src.np_MLP_layers import Layer
 import numpy as np
+from src.base.layer import Layer
+
 
 class MSE(Layer):
     def __init__(self) -> None:
+        super().__init__()
         self.cache = {
             'x': None,
             'y': None
@@ -22,4 +24,3 @@ class MSE(Layer):
     def backward(self):
         n, _ = self.cache['x'].shape
         return 2 * (self.cache['x'] - self.cache['y']) / n
-

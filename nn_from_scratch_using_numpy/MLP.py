@@ -1,6 +1,7 @@
-from src.np_MLP_layers import Linear, ReLU
+from src.compute.linear import Linear
+from src.activation.relu import ReLU
 import numpy as np
-
+from src.optim.sgd import SGD
 
 class MLP:
     """
@@ -37,3 +38,11 @@ class MLP:
     def update_params(self, l_r):
         for layer in self.layers:
             layer.update_params(l_r)
+
+
+if __name__ == '__main__':
+    config = [1, 10, 10, 1]
+    model = MLP(config)
+    optim = SGD(0.01, 0.9)
+    optim.step(model)
+    print(model)
