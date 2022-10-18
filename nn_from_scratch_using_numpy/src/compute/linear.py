@@ -18,8 +18,10 @@ class Linear(Layer):
         self._init_params()
 
     def _init_params(self):
-        self.params['weight'].data = 0.01 * np.random.randn(self.in_dim, self.out_dim)
-        self.params['bias'].data = 0.01 * np.zeros((self.out_dim, ))
+        # Initialize the weights
+        limit = 1 / np.sqrt(self.in_dim)
+        self.params['weight'].data = np.random.uniform(-limit, limit, (self.in_dim, self.out_dim))
+        self.params['bias'].data= np.zeros((self.out_dim, ))
 
         self.params['weight'].gradient = np.zeros_like(self.params['weight'].data)
         self.params['bias'].gradient = np.zeros_like(self.params['bias'].data)
