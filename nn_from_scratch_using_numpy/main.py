@@ -3,6 +3,7 @@ import numpy as np
 from MLP import MLP
 from src.loss.mse import MSE
 from src.optim.sgd import SGD
+from utils.ploter import Ploter
 
 def make_fake_data(N, mode):
     if mode == 'train':
@@ -20,12 +21,15 @@ test_x, test_y = make_fake_data(100, 'test')
 train_x = (train_x - train_x.mean()) / train_x.std()
 
 # init model and trainer
-config = [1, 10, 10, 1]
+config = [1, 100, 100, 1]
 model = MLP(config)
 loss_fn = MSE()
 optimizer = SGD(0.01, 0.9)
 
-
+idx_ = np.argsort(test_x, axis=0)
+test_x = test_x[idx_]
+test_y = test_y[idx_]
+ploter = Ploter(test_x, test_y)
 
 # =============== begin ================= #
 #            gradient descent             #
@@ -39,7 +43,13 @@ for iter in range(N_iter):
         l_back = loss_fn.backward()
         model.backward(l_back)
         optimizer.step(model)
+
+
+        ploter.update_pred(model.forward(test_x))
+        
         print(f'iter: [{iter:>4d}/{N_iter:>4d}], loss: {loss:>4f}')
+
+ploter.show()
 # =============== end =================== #
 #            gradient descent             #
 # =============== end =================== #
@@ -114,6 +124,15 @@ for iter in range(N_iter):
 # train_dataset = LRData(train_x, train_y)
 # train_dataloader = DataLoader(train_dataset, batch_size=b_s, shuffle=True, drop_last=False)
 
+
+# test_x = torch.from_numpy(test_x.astype(np.float32))
+# test_y = torch.from_numpy(test_y.astype(np.float32))
+# idx_ = test_x.argsort(dim=0)
+# test_x = test_x[idx_]
+# test_y = test_y[idx_]
+
+# ploter = Ploter(test_x, test_y)
+
 # for epoch in range(num_epoch):
 #     for batch_idx, (x, y) in enumerate(train_dataloader):
 #         pred = model(x)
@@ -125,6 +144,14 @@ for iter in range(N_iter):
 
 #         if batch_idx % ((N / b_s) // 5) == 0:
 #             print(f'epoch [{epoch:>3d}/{num_epoch:>3d}], batch [{batch_idx:>3d}/{(N // b_s):>3d}], loss: {loss:>4f}')
+        
+#         with torch.no_grad():
+#             pred = model(test_x)
+#             ploter.update_pred(np.array(pred))
+
+# ploter.show()
+
+
 # =============== end =================== #
 #               pytorch                   #
 # =============== end =================== #
