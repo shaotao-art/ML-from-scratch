@@ -19,3 +19,7 @@ class Layer:
     def backward(self, d_last):
         raise NotImplementedError
     
+class Params:
+    def __init__(self) -> None:
+        self.data = None
+        self.gradient = None 

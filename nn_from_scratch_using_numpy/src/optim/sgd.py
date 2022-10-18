@@ -17,19 +17,23 @@ class SGD:
         if self.w_go is None:
             self.w_go = []
             for i, layer in enumerate(model.layers):
-                if layer.gradient is not None:
-                    # 此处应为 np.zeros
-                    self.w_go.append(layer.gradient)
+                layer_lst = []
+                if layer.params is not None:
+                    for j, (k, v) in enumerate(layer.params.items()):
+                        layer_lst += [v.gradient]
+                        # 此处应为 np.zeros
+                    self.w_go.append(layer_lst)
                 else:
-                    self.w_go.append(None)
+                    self.w_go.append(layer_lst)
+
 
         for i, layer in enumerate(model.layers):
             if layer.params is not None:
-                for k, v in layer.gradient.items():
+                for j, (k, v) in enumerate(layer.params.items()):
                     # momentum update
-                    self.w_go[i][k] = self.momentum * self.w_go[i][k] + (1 - self.momentum) * v
+                    self.w_go[i][j] = self.momentum * self.w_go[i][j] + (1 - self.momentum) * v.gradient
                     # update params
-                    layer.params[k[2:]] -= self.l_r * self.w_go[i][k]
+                    layer.params[k].data -= self.l_r * self.w_go[i][j]
 
                 
 
