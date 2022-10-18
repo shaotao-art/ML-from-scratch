@@ -20,64 +20,44 @@ train_x, train_y = make_fake_data(N, 'train')
 test_x, test_y = make_fake_data(100, 'test')
 train_x = (train_x - train_x.mean()) / train_x.std()
 
+
+# =============== begin ================= #
+#             custom implement            #
+# =============== begin ================= #
+
 # init model and trainer
-config = [1, 100, 100, 1]
+config = [1, 10, 10, 1]
 model = MLP(config)
 loss_fn = MSE()
-optimizer = SGD(0.01, 0.9)
+optimizer = SGD(0.1, 0.9)
 
+# sort test data for ploter
 idx_ = np.argsort(test_x, axis=0)
 test_x = test_x[idx_]
 test_y = test_y[idx_]
 ploter = Ploter(test_x, test_y)
 
-# =============== begin ================= #
-#            gradient descent             #
-# =============== begin ================= #
+
 N_iter = 1000
-num_ = 32
+b_s = 64
+
 for iter in range(N_iter):
-        x, y = train_x[0 : num_], train_y[0 : num_]
+        # get minibatch for SGD
+        sample_idx = np.random.randint(0, len(train_x), (b_s, ))
+        x, y = train_x[sample_idx], train_y[sample_idx]
+
         pred = model.forward(x)
         loss = loss_fn.forward(pred, y)
         l_back = loss_fn.backward()
         model.backward(l_back)
+
         optimizer.step(model)
-
-
         ploter.update_pred(model.forward(test_x))
-        
         print(f'iter: [{iter:>4d}/{N_iter:>4d}], loss: {loss:>4f}')
 
-ploter.show()
+ploter.show(show=True)
 # =============== end =================== #
-#            gradient descent             #
-# =============== end =================== #
-
-
-
-# =============== begin ================= #
-#                  SGD                    #
-# =============== begin ================= #
-# num_epoch = 100
-# b_s = 64
-# def shuffle_data(x, y, N):
-#     idxs = np.arange(N)
-#     np.random.shuffle(idxs)
-#     return x[idxs], y[idxs]
-# for epoch in range(num_epoch):
-#     train_x, train_y = shuffle_data(train_x, train_y, N)
-#     for batch_idx in range(N // b_s + 1):
-#         start_idx = batch_idx * b_s
-#         end_idx = start_idx + b_s
-#         x, y = train_x[start_idx : end_idx if end_idx < N else N - 1], train_y[start_idx : end_idx if end_idx < N else N - 1]
-
-#         loss = trainer.forward(x, y)
-#         if batch_idx % ((N / b_s) // 5) == 0:
-#             print(f'epoch [{epoch:>3d}/{num_epoch:>3d}], batch [{batch_idx:>3d}/{(N // b_s):>3d}], loss: {loss:>4f}')
-#         trainer.update_params()
-# =============== end =================== #
-#                 SGD                     #
+#             custom implement            #
 # =============== end =================== #
 
 

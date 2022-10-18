@@ -35,10 +35,6 @@ class MLP:
         for layer in reversed(self.layers):
             d_last = layer.backward(d_last)
     
-    def update_params(self, l_r):
-        for layer in self.layers:
-            layer.update_params(l_r)
-
 
 if __name__ == '__main__':
     config = [1, 10, 10, 1]
